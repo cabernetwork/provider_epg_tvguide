@@ -1,0 +1,25 @@
+{
+    "epg":{
+        "id": null,
+        "icon": "cast",
+        "label": "EPG Providers",
+        "description": "EPG Services",
+        "sections":{
+            "tvguide":{
+                "label": "TVGuide",
+                "sort": "TVGuide1",
+                "icon": "tune",
+                "description": "Settings for TVGuide",
+                "settings":{
+                    "enabled":{
+                        "label": "Enabled",
+                        "type": "boolean",
+                        "default": true,
+                        "level": 1,
+                        "help": "Will disable if an error occurs; otherwise set to disable to disable plugin"
+                    }
+                }
+            }
+        }
+    }
+}

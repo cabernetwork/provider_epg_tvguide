@@ -1,0 +1,43 @@
+{
+    "epg":{
+        "id": null,
+        "icon": "cast",
+        "label": "EPG Providers",
+        "description": "EPG Services",
+        "sections":{
+            "tvguide":{
+                "label": "TVGuide",
+                "sort": "TVGuide2",
+                "icon": "view_timeline",
+                "description": "Settings for TVGuide Instances",
+                "settings":{
+                    "enabled":{
+                        "label": "Enabled",
+                        "type": "boolean",
+                        "default": false,
+                        "level": 0,
+                        "help": "Will disable this instance only"
+                    },
+                    "label":{
+                        "label": "Label",
+                        "type": "string",
+                        "default": null,
+                        "level": 0,
+                        "onChange": "lib.config.config_callbacks.update_instance_label",
+                        "help": "Defines the tab name for this instance"
+                    },
+                    "default_zone":{
+                        "label": "Default Zone",
+                        "type": "list",
+                        "default": "Eastern",
+                        "values": ["Eastern", "Central", "Mountain",
+                            "Pacific", "Alaskan", "Hawaiian"],
+                        "level": 2,
+                        "help": "Default is the Eat Coast time zone. Get numbers from tvguide.com"
+                    }
+                }
+            }
+        }
+    }
+}
+
