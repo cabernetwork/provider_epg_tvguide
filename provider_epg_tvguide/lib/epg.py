@@ -51,8 +51,6 @@ class EPG(PluginEPG):
             current_time = datetime.datetime.now(datetime.timezone.utc)
             start_time = current_time.replace(hour=0, minute=0, second=0, microsecond=0)
             start_seconds = int(start_time.timestamp())
-            
-
             min_dur = 20160
             
             uri = self.plugin_obj.unc_tvguide_base + \
@@ -75,16 +73,15 @@ class EPG(PluginEPG):
                     start_seconds = end_seconds
                     end_time = start_time + datetime.timedelta(days=1)
                     end_seconds = int(end_time.timestamp())
-                else:
-                    day_list.append({
-                        'id': prog['programId'],
-                        'channelId' : _uid,
-                        'progId': prog['programId'],
-                        'start': prog['startTime'],
-                        'end': prog['endTime'],
-                        'title': prog['title'],
-                        'rating': prog['rating']
-                        })
+                day_list.append({
+                    'id': prog['programId'],
+                    'channelId' : _uid,
+                    'progId': prog['programId'],
+                    'start': prog['startTime'],
+                    'end': prog['endTime'],
+                    'title': prog['title'],
+                    'rating': prog['rating']
+                    })
             if day_list:
                 prog_list[start_seconds] = day_list
                 day_list = []
