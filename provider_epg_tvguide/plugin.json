@@ -1,7 +1,7 @@
 {
     "id": "provider_epg_tvguide",
     "name": "TVGuide",
-    "version": "0.1.2",
+    "version": "0.1.4",
     "provider-name": "rocky4546",
     "summary": "Get EPG data from tvguide for personal use only",
     "description": "Obtain many days of EPG data from tvguide for personal use only.  There is no data within this plugin from the provider.",

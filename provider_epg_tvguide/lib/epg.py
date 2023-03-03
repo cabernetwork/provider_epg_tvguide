@@ -3,9 +3,8 @@
 MIT License
 
 Copyright (C) 2023 ROCKY4546
-https://github.com/rocky4546
 
-This file is part of the TVGuide plugin and is not associated with any other respository
+This file is part of the TVGuide plugin and is not associated with any other repository
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software
 and associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -26,8 +25,6 @@ from lib.db.db_temp import DBTemp
 
 class EPG(PluginEPG):
 
-
-
     def __init__(self, _instance_obj):
         super().__init__(_instance_obj)
         self.db_temp = DBTemp(self.config_obj.data)
@@ -47,14 +44,15 @@ class EPG(PluginEPG):
             tvg_ch = json.loads(tvg_ch[0]['json'])
         else:
             # get the tvg channel data from provider
-            
+
             current_time = datetime.datetime.now(datetime.timezone.utc)
             start_time = current_time.replace(hour=0, minute=0, second=0, microsecond=0)
             start_seconds = int(start_time.timestamp())
             min_dur = 20160
-            
+
             uri = self.plugin_obj.unc_tvguide_base + \
-                self.plugin_obj.unc_tvguide_sched.format(_zone, start_seconds, min_dur, _uid)
+                self.plugin_obj.unc_tvguide_sched \
+                    .format(_zone, start_seconds, min_dur, _uid)
 
             json_data = self.get_uri_data(uri)
             if json_data is None:
@@ -75,17 +73,16 @@ class EPG(PluginEPG):
                     end_seconds = int(end_time.timestamp())
                 day_list.append({
                     'id': prog['programId'],
-                    'channelId' : _uid,
+                    'channelId': _uid,
                     'progId': prog['programId'],
                     'start': prog['startTime'],
                     'end': prog['endTime'],
                     'title': prog['title'],
                     'rating': prog['rating']
-                    })
+                })
             if day_list:
                 prog_list[start_seconds] = day_list
                 day_list = []
-                start_time = end_seconds
 
             self.db_temp.save_json(self.plugin_obj.name, self.instance_key, str(_zone) + '_' + str(_uid), prog_list)
             # json requirements are different than Python so need to convert to JSON format and back

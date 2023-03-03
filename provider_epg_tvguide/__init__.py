@@ -2,9 +2,8 @@
 MIT License
 
 Copyright (C) 2023 ROCKY4546
-https://github.com/rocky4546
 
-This file is part of the TVGuide plugin and is not associated with any other respository
+This file is part of the TVGuide plugin and is not associated with any other repository
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software
 and associated documentation files (the "Software"), to deal in the Software without restriction,
