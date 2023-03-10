@@ -1,15 +1,20 @@
 {
-    "id": "provider_epg_tvguide",
-    "name": "TVGuide",
-    "version": "0.1.5",
-    "provider-name": "rocky4546",
-    "summary": "Get EPG data from tvguide for personal use only",
-    "description": "Obtain many days of EPG data from tvguide for personal use only.  There is no data within this plugin from the provider.",
-    "category": ["epg"],
-    "license": "Terms of Service: https://www.fandom.com/terms-of-service-pp1",
-    "source": "https://github.com/cabernetwork/cabernet",
-    "forum": "https://tvheadend.org/boards/5/topics/43052",
-    "website": "https://www.tvguide.com/",
-    "icon": "resources/icon.jpg",
-    "fanart": "resources/fanart.png"
+    "plugin": {
+        "id": "provider_epg_tvguide",
+        "name": "TVGuide",
+        "version": {
+            "current_version": "0.1.6"
+        },
+        "provider-name": "rocky4546",
+        "summary": "Get EPG data from tvguide for personal use only",
+        "description": "Obtain many days of EPG data from tvguide for personal use only.  There is no data within this plugin from the provider.",
+        "category": ["epg"],
+        "license": "Terms of Service: https://www.fandom.com/terms-of-service-pp1",
+        "source": "https://github.com/cabernetwork/provider_epg_tvguide",
+        "forum": "https://tvheadend.org/boards/5/topics/43052",
+        "website": "https://www.tvguide.com/",
+        "icon": "resources/icon.png",
+        "fanart": "resources/fanart.png",
+        "dependencies": null
+    }
 }
