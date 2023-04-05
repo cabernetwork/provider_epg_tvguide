@@ -16,7 +16,7 @@
                         "type": "boolean",
                         "default": false,
                         "level": 0,
-                        "help": "Will disable this instance only"
+                        "help": "Default: False. Will disable this instance only"
                     },
                     "label":{
                         "label": "Label",
@@ -33,7 +33,7 @@
                         "values": ["Eastern", "Central", "Mountain",
                             "Pacific", "Alaskan", "Hawaiian"],
                         "level": 2,
-                        "help": "Default is the Eat Coast time zone. Get numbers from tvguide.com"
+                        "help": "Default: Eastern. Default is the Eat Coast time zone. Get numbers from tvguide.com"
                     }
                 }
             }

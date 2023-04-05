@@ -16,7 +16,7 @@
                         "type": "boolean",
                         "default": true,
                         "level": 0,
-                        "help": "Will disable if an error occurs; otherwise set to disable to disable plugin"
+                        "help": "Default: True. Will disable if an error occurs; otherwise set to disable to disable plugin"
                     },
                     "plugin_image":{
                         "label": "Image",
