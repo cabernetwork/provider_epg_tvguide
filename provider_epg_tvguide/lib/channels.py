@@ -185,7 +185,7 @@ class Channels(PluginChannels):
                 'epg_id': [_zone, uid]
             }
             ch_list.append(channel)
-            self.logger.debug('{} Added Channel {}:{}'.format(self.plugin_obj.name, uid, name))
+            self.logger.trace('{} Added Channel {}:{}'.format(self.plugin_obj.name, uid, name))
         return ch_list
 
     def get_default_zones(self):
