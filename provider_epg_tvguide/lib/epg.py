@@ -57,6 +57,10 @@ class EPG(PluginEPG):
             json_data = self.get_uri_data(uri, 2)
             if json_data is None:
                 return None
+            if len(json_data['data']['items']) == 0:
+                self.logger.notice('TVGuide Zone: {}  UID: {} has no programs'
+                    .format(_zone, _uid))
+                return None
 
             json_data = json_data['data']['items'][0]['programSchedules']
             end_time = start_time + datetime.timedelta(days=1)
