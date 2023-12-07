@@ -3,12 +3,12 @@
         "id": "provider_epg_tvguide",
         "name": "TVGuide",
         "version": {
-            "current": "0.1.10"
+            "current": "0.1.11"
         },
         "requires": [{
             "cabernet": {
                 "name": "cabernet",
-                "version": "0.9.11.0"
+                "version": "0.9.14.0"
             }
         }],
         "provider-name": "rocky4546",

@@ -40,7 +40,7 @@ class Programs(PluginPrograms):
             return program
 
         uri = self.plugin_obj.unc_tvguide_base + self.plugin_obj.unc_tvguide_prog_details.format(_prog_id)
-        prog_details = self.get_uri_data(uri)
+        prog_details = self.get_uri_data(uri, 2)
         if not prog_details:
             return []
 

@@ -56,7 +56,7 @@ class Channels(PluginChannels):
         gets the referer required to obtain the ts or stream files from server
         """
         text = self.get_uri_data(self.plugin_obj.unc_daddylive_base +
-                                 self.plugin_obj.unc_daddylive_stream.format(_channel_id))
+                                 self.plugin_obj.unc_daddylive_stream.format(_channel_id), 2)
         m = re.search(self.search_url, text)
         if not m:
             # unable to obtain the url, abort
@@ -77,7 +77,7 @@ class Channels(PluginChannels):
             'User-agent': utils.DEFAULT_USER_AGENT,
             'Referer': self.plugin_obj.unc_daddylive_base + self.plugin_obj.unc_daddylive_stream.format(_channel_id)}
 
-        text = self.get_uri_data(ch_url, _header=header)
+        text = self.get_uri_data(ch_url, 2, _header=header)
         m = re.search(self.search_m3u8, text)
         if not m:
             # unable to obtain the url, abort
@@ -88,7 +88,7 @@ class Channels(PluginChannels):
         header = {
             'User-agent': utils.DEFAULT_USER_AGENT,
             'Referer': ch_url}
-        video_url_m3u = self.get_m3u8_data(stream_url, _header=header)
+        video_url_m3u = self.get_m3u8_data(stream_url, 2, _header=header)
         if not video_url_m3u:
             self.logger.notice('{}:{} Unable to obtain m3u file, aborting stream {}'
                                .format(self.plugin_obj.name, self.instance_key, _channel_id))
@@ -149,7 +149,7 @@ class Channels(PluginChannels):
         """
         ch_list = []
         uri = self.plugin_obj.unc_tvguide_base + self.plugin_obj.unc_tvguide_ch_list.format(_zone)
-        tvg_json = self.get_uri_json_data(uri)
+        tvg_json = self.get_uri_json_data(uri, 2)
         if tvg_json is None:
             self.logger.warning('{}:{} No channels returned for zone {} from tvguide'
                                 .format(self.plugin_obj.name, self.instance_key, _zone))

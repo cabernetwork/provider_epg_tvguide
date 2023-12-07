@@ -54,7 +54,7 @@ class EPG(PluginEPG):
                 self.plugin_obj.unc_tvguide_sched \
                     .format(_zone, start_seconds, min_dur, _uid)
 
-            json_data = self.get_uri_data(uri)
+            json_data = self.get_uri_data(uri, 2)
             if json_data is None:
                 return None
 
