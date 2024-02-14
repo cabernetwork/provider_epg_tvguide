@@ -42,7 +42,24 @@ class Programs(PluginPrograms):
         uri = self.plugin_obj.unc_tvguide_base + self.plugin_obj.unc_tvguide_prog_details.format(_prog_id)
         prog_details = self.get_uri_data(uri, 2)
         if not prog_details:
-            return []
+            # for programs that do not have detailed info, provide a default set
+            program = {
+                'title': 'Not Available',
+                'desc': 'Not Available',
+                'short_desc': 'Not Available',
+                'rating': None,
+                'year': None,
+                'date': None,
+                'type': None,
+                'episode': None,
+                'season': None,
+                'subtitle': None,
+                'genres': None,
+                'image': None}
+
+            self.db_programs.save_program(self.plugin_obj.name, _prog_id, program)
+            return self.db_programs.get_program(self.plugin_obj.name, _prog_id)
+
 
         prog_details = prog_details['data']['item']
         if prog_details['title'] is None:
