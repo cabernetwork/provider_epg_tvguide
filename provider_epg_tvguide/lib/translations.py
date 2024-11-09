@@ -18,7 +18,7 @@ substantial portions of the Software.
 
 from lib.tvheadend.epg_category import tvh_genres
 
-tvguide_base = 'gfpMXf5BjIU/y8p7XZS3ywCGXZUojZdGgbz7tqSZkbSoyNMFyZrM'
+tvguide_base = 'gfpMXf5BjIUYkblOtbSoj8pNtRr/txhFkNUP'
 tvguide_prog_details = 'jRkLjR33XxoQzftKkN37tfrEts5Qzft8zb7otqUGXZU8XZdPtxrMkb7EXIUT1qURtb2='
 tvguide_ch_list = 'jRkLjR33XxoQzftKkN37tfrEts5Qzft8zb7otqUKtsiNgbl7XfiQzZ7ots2Q0RMQXNUCXZl7XIURtb2='
 tvguide_sched = ''.join(['jRkLjR33XxoQzftKkN37tfrEts5Qzft8zb7otqUT1qURtb2VXRp3X8',
