@@ -18,6 +18,7 @@ substantial portions of the Software.
 
 import re
 import string
+import time
 
 from lib.db.db_epg_programs import DBEpgPrograms
 from lib.plugins.plugin_programs import PluginPrograms
@@ -60,7 +61,8 @@ class Programs(PluginPrograms):
             self.db_programs.save_program(self.plugin_obj.name, _prog_id, program)
             return self.db_programs.get_program(self.plugin_obj.name, _prog_id)
 
-
+        # TVG thinks DDOS if not slow pulls, so put time delays into method.
+        time.sleep(1.0)
         prog_details = prog_details['data']['item']
         if prog_details['title'] is None:
             prog_details['title'] = prog_details['name']
