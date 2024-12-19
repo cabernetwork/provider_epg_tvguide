@@ -62,7 +62,7 @@ class Programs(PluginPrograms):
             return self.db_programs.get_program(self.plugin_obj.name, _prog_id)
 
         # TVG thinks DDOS if not slow pulls, so put time delays into method.
-        time.sleep(1.0)
+        time.sleep(0.5)
         prog_details = prog_details['data']['item']
         if prog_details['title'] is None:
             prog_details['title'] = prog_details['name']

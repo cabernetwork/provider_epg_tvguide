@@ -19,10 +19,10 @@ substantial portions of the Software.
 from lib.tvheadend.epg_category import tvh_genres
 
 tvguide_base = 'gfpMXf5BjIUYkblOtbSoj8pNtRr/txhFkNUP'
-tvguide_prog_details = 'jRkLjR33XxoQzftKkN37tfrEts5Qzft8zb7otqUGXZU8XZdPtxrMkb7EXIUT1qURtb2='
-tvguide_ch_list = 'jRkLjR33XxoQzftKkN37tfrEts5Qzft8zb7otqUKtsiNgbl7XfiQzZ7ots2Q0RMQXNUCXZl7XIURtb2='
-tvguide_sched = ''.join(['jRkLjR33XxoQzftKkN37tfrEts5Qzft8zb7otqUT1qURtb2VXRp3X8',
-                         'nU0RMZtfrIksp/yNJU0RMZkN33yZS7ydlQzsi6th7oXKCT1n=='])
+tvguide_prog_details = 'jRpNXNl+tbpCyxrKjRpNtRr/txhQXfiQtRi3ybp7zxd/yf5Q0RMQzNrY'
+tvguide_ch_list = 'jRpNXNl+tbpCyxrKjRpNtRr/txhQXNrIzZ76tsaIyRt/txrIjRPUjRlQzsi6ts5QzNrY'
+tvguide_sched = ''.join(['jRpNXNl+tbpCyxrKjRpNtRr/txhQ0RMQzNrYuRlMksiM',
+                         'usPUiZpCXZdMgbUFusPUiZl+kbSFtbL4yRrIkNritf5U0RM='])
 tvguide_image = 'gfpMXf5BjIURzRXFzft8zb7otqS6yNMQkqU/ybXQkNdMkbLQtG=='
 tvguide_zones = ''.join([
     'bREYgbnYmYWS54WG5cWL545JjwWYyZdPtq2B2widkslMtsiF2wMerr5Y1qGe0Ii/tw2B2coL5cWG5c2G545E2wiFkbC726',
@@ -36,6 +36,7 @@ tv_genres = {
     "Animals": [tvh_genres['NATURE']],
     "Animated": [tvh_genres['CARTOON']],
     "Animated Comedy": [tvh_genres['CARTOON']],
+    "Animation": [tvh_genres['CARTOON']],
     "Art": [tvh_genres['CULTURE']],
     "Auto Info": [tvh_genres['SPORT_MOTOR']],
     "Baseball": [tvh_genres['SPORT_TEAM']],
@@ -74,6 +75,7 @@ tv_genres = {
     "Mystery": [tvh_genres['THRILLER']],
     "Mystery & Suspense": [tvh_genres['THRILLER']],
     "Newscast": [tvh_genres['NEWS']],
+    "News": [tvh_genres['NEWS']],
     "Newsmagazine": [tvh_genres['NEWS_MAGAZINE']],
     "Politics": [tvh_genres['NEWS']],
     "Performance": [tvh_genres['PERFORMING']],

@@ -34,5 +34,17 @@ class TVGuide(PluginObj):
         self.unc_tvguide_image = self.uncompress(translations.tvguide_image)
         self.zone_defaults = json.loads(self.uncompress(translations.tvguide_zones))
 
+        self.logger.warning(self.unc_tvguide_base)
+        self.logger.warning(self.unc_tvguide_prog_details)
+        self.logger.warning(self.unc_tvguide_ch_list)
+        self.logger.warning(self.unc_tvguide_sched)
+        self.logger.warning(self.unc_tvguide_image)
+        self.logger.warning(self.zone_defaults)
+
+        self.logger.warning(self.compress('/tvschedules/tvguide/programdetails/{}/web'))
+        self.logger.warning(self.compress('/tvschedules/tvguide/serviceprovider/{}/sources/web'))
+        self.logger.warning(self.compress('/tvschedules/tvguide/{}/web?start={}&duration={}&channelSourceIds={}'))
+
+
         for inst in _plugin.instances:
             self.instances[inst] = TVGuideInstance(self, inst)
