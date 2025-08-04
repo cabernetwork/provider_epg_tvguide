@@ -55,6 +55,8 @@ class EPG(PluginEPG):
                     .format(_zone, start_seconds, min_dur, _uid)
 
             json_data = self.get_uri_data(uri, 2)
+            # TVG thinks DDOS if not slow pulls, so put time delays into method.
+            time.sleep(0.5)
             if json_data is None:
                 return None
             if len(json_data['data']['items']) == 0:
