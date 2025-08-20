@@ -3,7 +3,7 @@
         "id": "provider_epg_tvguide",
         "name": "TVGuide",
         "version": {
-            "current": "0.1.18"
+            "current": "0.1.19"
         },
         "requires": [{
             "cabernet": {

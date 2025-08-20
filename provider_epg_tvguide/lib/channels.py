@@ -27,6 +27,7 @@ class Channels(PluginChannels):
 
     def __init__(self, _instance_obj):
         super().__init__(_instance_obj)
+        self.down_timer = 0  # stop running queries to website when errors start occurring
         self.search_url = re.compile(b'iframe src=\"(.*?)\" width')
         self.search_m3u8 = re.compile(b'source:\'(.*?)\'')
         self.search_ch = re.compile(r'div class="grid-item">'
@@ -148,12 +149,33 @@ class Channels(PluginChannels):
         All if _ch_ids is None
         """
         ch_list = []
-        uri = self.plugin_obj.unc_tvguide_base + self.plugin_obj.unc_tvguide_ch_list.format(_zone)
-        tvg_json = self.get_uri_json_data(uri, 2)
-        if tvg_json is None:
-            self.logger.warning('{}:{} No channels returned for zone {} from tvguide'
+
+        if self.down_timer > 0:
+            self.down_timer -= 1
+            self.logger.notice('{}:{} Errors occuring on Channel queries, skipping for zone {}'
                                 .format(self.plugin_obj.name, self.instance_key, _zone))
             return
+        else:
+            header = {
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                'Accept-Encoding': 'gzip, deflate, br, zstd',
+                'Accept-Language': 'en-US,en;q=0.5',
+                'Connection': 'keep-alive',
+                'Host': 'backend.tvguide.com',
+                'Priority': 'u=0, i',
+                #'User-agent': utils.DEFAULT_USER_AGENT,
+                'User-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:142.0) Gecko/20100101 Firefox/142.0',
+                #'User-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36 Edg/139.0.0.0',
+                'Referer': 'https://www.tvguide.com/',
+                'Origin': 'https://www.tvguide.com'}
+
+            uri = self.plugin_obj.unc_tvguide_base + self.plugin_obj.unc_tvguide_ch_list.format(_zone)
+            tvg_json = self.get_uri_json_data(uri, 2, _header=header)
+            if tvg_json is None:
+                self.logger.warning('{}:{} No channels returned for zone {} from tvguide'
+                                    .format(self.plugin_obj.name, self.instance_key, _zone))
+                self.down_timer = 200
+                return
         for ch in tvg_json['data']['items']:
 
             if _ch_ids is not None and ch['sourceId'] not in _ch_ids:
