@@ -31,7 +31,6 @@ class Programs(PluginPrograms):
     def __init__(self, _instance_obj):
         super().__init__(_instance_obj)
         self.db_programs = DBEpgPrograms(self.config_obj.data)
-        self.down_timer = 0
 
     def get_program_info(self, _prog_id):
         """
@@ -41,50 +40,42 @@ class Programs(PluginPrograms):
         program = self.db_programs.get_program(self.plugin_obj.name, _prog_id)
         if len(program) != 0:
             return program
-            
-        # TVG thinks DDOS if not slow pulls, so put time delays into method.
-        time.sleep(0.5)
-        if self.down_timer > 0:
-            self.down_timer -= 1
-            self.logger.notice('{}:{} Errors occuring on PROGRAM queries, skipping for program id {}'
-                                .format(self.plugin_obj.name, self.instance_key, _prog_id))
+
+        prog_details = None
+        self.plugin_obj.check_ua_timer()
+        while self.plugin_obj.user_agent:
+            uri = self.plugin_obj.append_apikey(
+                self.plugin_obj.unc_tvguide_base + \
+                    self.plugin_obj.unc_tvguide_prog_details.format(_prog_id))
+
+            prog_details = self.get_uri_data(uri, 2, _header=self.plugin_obj.header)
+            time.sleep(self.config_obj.data[self.plugin_obj.namespace.lower()]['http_delay'])
+            if prog_details is None:
+                self.logger.notice('{}:{} No program details returned for Prog_ID: {}  UA Index: {} from tvguide'
+                    .format(self.plugin_obj.name, self.instance_key, _prog_id, self.plugin_obj.ua_index))
+                self.plugin_obj.incr_ua()
+            else:
+                break
+
+        if not prog_details:
             return []
-        else:
-            header = {
-                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-                'Accept-Encoding': 'gzip, deflate, br, zstd',
-                'Accept-Language': 'en-US,en;q=0.5',
-                'Connection': 'keep-alive',
-                'Host': 'backend.tvguide.com',
-                'Priority': 'u=0, i',
-                #'User-agent': utils.DEFAULT_USER_AGENT,
-                'User-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:142.0) Gecko/20100101 Firefox/142.0',
-                #'User-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36 Edg/139.0.0.0',
-                'Referer': 'https://www.tvguide.com/',
-                'Origin': 'https://www.tvguide.com'}
+            # for programs that do not have detailed info, provide a default set
+            #program = {
+            #    'title': 'Not Available',
+            #    'desc': 'Not Available',
+            #    'short_desc': 'Not Available',
+            #    'rating': None,
+            #    'year': None,
+            #    'date': None,
+            #    'type': None,
+            #    'episode': None,
+            #    'season': None,
+            #    'subtitle': None,
+            #    'genres': None,
+            #    'image': None}
 
-
-            uri = self.plugin_obj.unc_tvguide_base + self.plugin_obj.unc_tvguide_prog_details.format(_prog_id)
-            prog_details = self.get_uri_data(uri, 2, _header=header)
-            if not prog_details:
-                self.down_timer = 200
-                # for programs that do not have detailed info, provide a default set
-                program = {
-                    'title': 'Not Available',
-                    'desc': 'Not Available',
-                    'short_desc': 'Not Available',
-                    'rating': None,
-                    'year': None,
-                    'date': None,
-                    'type': None,
-                    'episode': None,
-                    'season': None,
-                    'subtitle': None,
-                    'genres': None,
-                    'image': None}
-
-                self.db_programs.save_program(self.plugin_obj.name, _prog_id, program)
-                return self.db_programs.get_program(self.plugin_obj.name, _prog_id)
+            #self.db_programs.save_program(self.plugin_obj.name, _prog_id, program)
+            #return self.db_programs.get_program(self.plugin_obj.name, _prog_id)
 
         prog_details = prog_details['data']['item']
         if prog_details['title'] is None:

@@ -30,7 +30,6 @@ class EPG(PluginEPG):
     def __init__(self, _instance_obj):
         super().__init__(_instance_obj)
         self.db_temp = DBTemp(self.config_obj.data)
-        self.down_timer = 0
 
     def get_channel_day(self, _zone, _uid, _day_seconds):
         """
@@ -47,40 +46,29 @@ class EPG(PluginEPG):
             tvg_ch = json.loads(tvg_ch[0]['json'])
         else:
             # get the tvg channel data from provider
-
             current_time = datetime.datetime.now(datetime.timezone.utc)
             start_time = current_time.replace(hour=0, minute=0, second=0, microsecond=0)
             start_seconds = int(start_time.timestamp())
             min_dur = 20160
 
-            uri = self.plugin_obj.unc_tvguide_base + \
-                self.plugin_obj.unc_tvguide_sched \
-                    .format(_zone, start_seconds, min_dur, _uid)
-            time.sleep(0.5)
-            if self.down_timer > 0:
-                self.down_timer -= 1
-                self.logger.notice('{}:{} Errors occuring on EPG queries, skipping for uid {}'
-                                    .format(self.plugin_obj.name, self.instance_key, _uid))
-                return
-            else:
-                header = {
-                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-                    'Accept-Encoding': 'gzip, deflate, br, zstd',
-                    'Accept-Language': 'en-US,en;q=0.5',
-                    'Connection': 'keep-alive',
-                    'Host': 'backend.tvguide.com',
-                    'Priority': 'u=0, i',
-                    #'User-agent': utils.DEFAULT_USER_AGENT,
-                    'User-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:142.0) Gecko/20100101 Firefox/142.0',
-                    #'User-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36 Edg/139.0.0.0',
-                    'Referer': 'https://www.tvguide.com/',
-                    'Origin': 'https://www.tvguide.com'}
-
-                json_data = self.get_uri_data(uri, 2, _header=header)
-                # TVG thinks DDOS if not slow pulls, so put time delays into method.
+            self.plugin_obj.check_ua_timer()
+            json_data = None
+            while self.plugin_obj.user_agent:
+                uri = self.plugin_obj.append_apikey(
+                    self.plugin_obj.unc_tvguide_base + \
+                    self.plugin_obj.unc_tvguide_sched \
+                    .format(_zone, start_seconds, min_dur, _uid))
+                json_data = self.get_uri_data(uri, 2, _header=self.plugin_obj.header)
+                time.sleep(self.config_obj.data[self.plugin_obj.namespace.lower()]['http_delay'])
                 if json_data is None:
-                    self.down_timer = 200
-                    return None
+                    self.logger.notice('{}:{} No schedule returned for Zone: {}  UID: {}  UA Index: {} from tvguide'
+                        .format(self.plugin_obj.name, self.instance_key, _zone, _uid, self.plugin_obj.ua_index))
+                    self.plugin_obj.incr_ua()
+                else:
+                    break
+
+            if not json_data:
+                return
             if len(json_data['data']['items']) == 0:
                 self.logger.notice('TVGuide Zone: {}  UID: {} has no programs'
                     .format(_zone, _uid))

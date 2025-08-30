@@ -32,6 +32,14 @@
                         "level": 0,
                         "writable": false,
                         "help": "Version of the plugin in the plugin.json file"
+                    },
+                    "http_delay":{
+                        "label": "HTTP delay",
+                        "type": "float",
+                        "default": 1.1,
+                        "level": 2,
+                        "writable": true,
+                        "help": "Default: 1.0. Floating point delay in seconds between HTTP GETs to the provider website to slow down hitting site."
                     }
                 }
             }

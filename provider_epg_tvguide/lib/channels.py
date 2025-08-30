@@ -16,6 +16,7 @@ substantial portions of the Software.
 """
 
 import re
+import time
 
 from lib.plugins.plugin_channels import PluginChannels
 from lib.common.decorators import handle_json_except
@@ -35,113 +36,20 @@ class Channels(PluginChannels):
         self.ch_db_list = None
 
     def get_channels(self):
-        self.ch_db_list = self.db.get_channels(self.plugin_obj.name, self.instance_key)
-
-        ch_list = self.get_channel_list(self.config_obj.data[self.config_section]['default_zone'])
-        if len(ch_list) == 0:
-            self.logger.warning('TVGuide channel list is empty from provider, not updating Cabernet')
-            return
-        self.logger.info("{}: Found {} stations on instance {}"
-                         .format(self.plugin_obj.name, len(ch_list), self.instance_key))
-        ch_list = sorted(ch_list, key=lambda d: d['name'])
-        ch_num = 1
-        for ch in ch_list:
-            ch['number'] = ch_num
-            ch_num += 1
-        return ch_list
+        self.logger.warning('####### CALLING GET_CHANNELS #######')
+        return
 
     @handle_url_except(timeout=10.0)
     @handle_json_except
     def get_channel_ref(self, _channel_id):
-        """
-        gets the referer required to obtain the ts or stream files from server
-        """
-        text = self.get_uri_data(self.plugin_obj.unc_daddylive_base +
-                                 self.plugin_obj.unc_daddylive_stream.format(_channel_id), 2)
-        m = re.search(self.search_url, text)
-        if not m:
-            # unable to obtain the url, abort
-            self.logger.info('{}: {} Unable to obtain url, aborting'
-                             .format(self.plugin_obj.name, _channel_id))
-            return
-        return m[1].decode('utf8')
+        self.logger.warning('####### CALLING GET_CHANNEL_REF #######')
+        return
 
     @handle_url_except(timeout=10.0)
     @handle_json_except
     def get_channel_uri(self, _channel_id):
-        json_needs_updating = False
-        ch_url = self.get_channel_ref(_channel_id)
-        if not ch_url:
-            return
-
-        header = {
-            'User-agent': utils.DEFAULT_USER_AGENT,
-            'Referer': self.plugin_obj.unc_daddylive_base + self.plugin_obj.unc_daddylive_stream.format(_channel_id)}
-
-        text = self.get_uri_data(ch_url, 2, _header=header)
-        m = re.search(self.search_m3u8, text)
-        if not m:
-            # unable to obtain the url, abort
-            self.logger.notice('{}: {} Unable to obtain m3u8, aborting'
-                               .format(self.plugin_obj.name, _channel_id))
-            return
-        stream_url = m[1].decode('utf8')
-        header = {
-            'User-agent': utils.DEFAULT_USER_AGENT,
-            'Referer': ch_url}
-        video_url_m3u = self.get_m3u8_data(stream_url, 2, _header=header)
-        if not video_url_m3u:
-            self.logger.notice('{}:{} Unable to obtain m3u file, aborting stream {}'
-                               .format(self.plugin_obj.name, self.instance_key, _channel_id))
-            return
-        self.logger.debug('{}: Found {} Playlist(s)'
-                          .format(self.plugin_obj.name, str(len(video_url_m3u.playlists))))
-
-        ch_dict = self.db.get_channel(_channel_id, self.plugin_obj.name, self.instance_key)
-        ch_json = ch_dict['json']
-
-        best_stream = None
-        best_resolution = -1
-        if len(video_url_m3u.playlists) > 0:
-            for videoStream in video_url_m3u.playlists:
-                if videoStream.stream_info.resolution is not None:
-                    if best_stream is None:
-                        best_stream = videoStream
-                        best_resolution = videoStream.stream_info.resolution[1]
-                    elif ((videoStream.stream_info.resolution[0] > best_stream.stream_info.resolution[0]) and
-                          (videoStream.stream_info.resolution[1] > best_stream.stream_info.resolution[1])):
-                        best_resolution = videoStream.stream_info.resolution[1]
-                        best_stream = videoStream
-                    elif ((videoStream.stream_info.resolution[0] == best_stream.stream_info.resolution[0]) and
-                          (videoStream.stream_info.resolution[1] == best_stream.stream_info.resolution[1]) and
-                          (videoStream.stream_info.bandwidth > best_stream.stream_info.bandwidth)):
-                        best_resolution = videoStream.stream_info.resolution[1]
-                        best_stream = videoStream
-
-            if best_stream is not None:
-                if best_resolution >= 720 and ch_json['HD'] == 0:
-                    ch_json['HD'] = 1
-                    json_needs_updating = True
-                elif best_resolution < 720 and ch_json['HD'] == 1:
-                    ch_json['HD'] = 0
-                    json_needs_updating = True
-
-                self.logger.notice('{}: {} will use {}x{} resolution at {}bps'
-                                   .format(self.plugin_obj.name, _channel_id,
-                                           str(best_stream.stream_info.resolution[0]),
-                                           str(best_stream.stream_info.resolution[1]),
-                                           str(best_stream.stream_info.bandwidth)))
-                m3u8_uri = best_stream.absolute_uri
-            else:
-                m3u8_uri = None
-        else:
-            self.logger.debug('{}: {} No variant streams found for this station.  Assuming single stream only.'
-                              .format(self.plugin_obj.name, _channel_id))
-            m3u8_uri = stream_url
-
-        if json_needs_updating:
-            self.db.update_channel_json(ch_json, self.plugin_obj.name, self.instance_key)
-        return m3u8_uri
+        self.logger.warning('####### CALLING GET_CHANNEL_URI #######')
+        return
 
     def get_channel_list(self, _zone, _ch_ids=None):
         """
@@ -150,32 +58,9 @@ class Channels(PluginChannels):
         """
         ch_list = []
 
-        if self.down_timer > 0:
-            self.down_timer -= 1
-            self.logger.notice('{}:{} Errors occuring on Channel queries, skipping for zone {}'
-                                .format(self.plugin_obj.name, self.instance_key, _zone))
+        tvg_json = self.get_zone_data(_zone)
+        if tvg_json is None:
             return
-        else:
-            header = {
-                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-                'Accept-Encoding': 'gzip, deflate, br, zstd',
-                'Accept-Language': 'en-US,en;q=0.5',
-                'Connection': 'keep-alive',
-                'Host': 'backend.tvguide.com',
-                'Priority': 'u=0, i',
-                #'User-agent': utils.DEFAULT_USER_AGENT,
-                'User-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:142.0) Gecko/20100101 Firefox/142.0',
-                #'User-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36 Edg/139.0.0.0',
-                'Referer': 'https://www.tvguide.com/',
-                'Origin': 'https://www.tvguide.com'}
-
-            uri = self.plugin_obj.unc_tvguide_base + self.plugin_obj.unc_tvguide_ch_list.format(_zone)
-            tvg_json = self.get_uri_json_data(uri, 2, _header=header)
-            if tvg_json is None:
-                self.logger.warning('{}:{} No channels returned for zone {} from tvguide'
-                                    .format(self.plugin_obj.name, self.instance_key, _zone))
-                self.down_timer = 200
-                return
         for ch in tvg_json['data']['items']:
 
             if _ch_ids is not None and ch['sourceId'] not in _ch_ids:
@@ -209,6 +94,22 @@ class Channels(PluginChannels):
             ch_list.append(channel)
             self.logger.trace('{} Added Channel {}:{}'.format(self.plugin_obj.name, uid, name))
         return ch_list
+
+    def get_zone_data(self, _zone):
+        self.plugin_obj.check_ua_timer()
+        while self.plugin_obj.user_agent:
+            uri = self.plugin_obj.append_apikey(
+                self.plugin_obj.unc_tvguide_base + \
+                self.plugin_obj.unc_tvguide_ch_list.format(_zone))
+            tvg_json = self.get_uri_json_data(uri, 2, _header=self.plugin_obj.header)
+            time.sleep(self.config_obj.data[self.plugin_obj.namespace.lower()]['http_delay'])
+            if tvg_json is None:
+                self.logger.notice('{}:{} No channels returned for Zone: {}  UA Index: {} from tvguide'
+                    .format(self.plugin_obj.name, self.instance_key, _zone, self.plugin_obj.ua_index))
+                self.plugin_obj.incr_ua()
+            else:
+                return tvg_json
+        return
 
     def get_default_zones(self):
         zones = self.db.get_zones(self.plugin_obj.name, self.instance_key)
