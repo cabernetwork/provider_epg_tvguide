@@ -51,7 +51,7 @@ class Programs(PluginPrograms):
             prog_details = self.get_uri_data(uri, 2, _header=self.plugin_obj.header)
             time.sleep(self.config_obj.data[self.plugin_obj.namespace.lower()]['http_delay'])
             if prog_details is None:
-                self.logger.notice('{}:{} No program details returned for Prog_ID: {}  UA Index: {} from tvguide'
+                self.logger.notice('{}:{} No program details returned for Prog_ID: {}  UA Index: {}'
                     .format(self.plugin_obj.name, self.instance_key, _prog_id, self.plugin_obj.ua_index))
                 self.plugin_obj.incr_ua()
             else:

@@ -44,7 +44,6 @@ class TVGuide(PluginObj):
             'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36 Edg/139.0.0.0',
             'Mozilla/5.0 (Android 16; Mobile; LG-M255; rv:142.0) Gecko/142.0 Firefox/142.0',
             'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:142.0) Gecko/20100101 Firefox/142.0',
-            'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:15.0) Gecko/20100101 Firefox/15.0.1',
             None
         ]
         self.ua_index = 0
@@ -61,13 +60,12 @@ class TVGuide(PluginObj):
                 self.ua_down_time = time.time()
 
     def check_ua_timer(self):
-        if self.ua_index+1 >= len(self.user_agents):
-            delta_down_time = time.time() - self.ua_down_time
-            if delta_down_time > self.max_ua_down_time:
-                self.logger.debug('{}: User Agent timeout exceeded.  Will try to reconnect to provider')
-                self.ua_index = 0
-                self.ua_down_time = time.time()
-                return True
+        delta_down_time = time.time() - self.ua_down_time
+        if delta_down_time > self.max_ua_down_time:
+            self.logger.debug('{}: User Agent timeout exceeded.  Will try to reconnect to provider')
+            self.ua_index = 0
+            self.ua_down_time = time.time()
+            return True
         return False
 
     def append_apikey(self, _uri):

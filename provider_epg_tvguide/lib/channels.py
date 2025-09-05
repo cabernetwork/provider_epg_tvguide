@@ -97,6 +97,7 @@ class Channels(PluginChannels):
 
     def get_zone_data(self, _zone):
         self.plugin_obj.check_ua_timer()
+        tvg_json = None
         while self.plugin_obj.user_agent:
             uri = self.plugin_obj.append_apikey(
                 self.plugin_obj.unc_tvguide_base + \
@@ -104,11 +105,14 @@ class Channels(PluginChannels):
             tvg_json = self.get_uri_json_data(uri, 2, _header=self.plugin_obj.header)
             time.sleep(self.config_obj.data[self.plugin_obj.namespace.lower()]['http_delay'])
             if tvg_json is None:
-                self.logger.notice('{}:{} No channels returned for Zone: {}  UA Index: {} from tvguide'
+                self.logger.notice('{}:{} No channels returned for Zone: {}  UA Index: {}'
                     .format(self.plugin_obj.name, self.instance_key, _zone, self.plugin_obj.ua_index))
                 self.plugin_obj.incr_ua()
             else:
                 return tvg_json
+        if not tvg_json:
+            self.logger.debug('{}:{} Website is restricted.  Wait a long time before running again. Zone: {}  UA Index: {}'
+                    .format(self.plugin_obj.name, self.instance_key, _zone, _uid, self.plugin_obj.ua_index))
         return
 
     def get_default_zones(self):

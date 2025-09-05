@@ -39,7 +39,8 @@
                         "default": 1.1,
                         "level": 2,
                         "writable": true,
-                        "help": "Default: 1.0. Floating point delay in seconds between HTTP GETs to the provider website to slow down hitting site."
+                        "onChange": ".provider_epg_tvguide.lib.config_callbacks.timeout_limit",
+                        "help": "Default: 1.1. Floating point delay in seconds between HTTP GETs to the provider website to slow down hitting site."
                     }
                 }
             }

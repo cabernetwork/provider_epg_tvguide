@@ -61,13 +61,15 @@ class EPG(PluginEPG):
                 json_data = self.get_uri_data(uri, 2, _header=self.plugin_obj.header)
                 time.sleep(self.config_obj.data[self.plugin_obj.namespace.lower()]['http_delay'])
                 if json_data is None:
-                    self.logger.notice('{}:{} No schedule returned for Zone: {}  UID: {}  UA Index: {} from tvguide'
+                    self.logger.notice('{}:{} No schedule returned for Zone: {}  UID: {}  UA Index: {}'
                         .format(self.plugin_obj.name, self.instance_key, _zone, _uid, self.plugin_obj.ua_index))
                     self.plugin_obj.incr_ua()
                 else:
                     break
 
             if not json_data:
+                self.logger.debug('{}:{} Website is restricted.  Wait a long time before running again. Zone: {}  UID: {}  UA Index: {}'
+                        .format(self.plugin_obj.name, self.instance_key, _zone, _uid, self.plugin_obj.ua_index))
                 return
             if len(json_data['data']['items']) == 0:
                 self.logger.notice('TVGuide Zone: {}  UID: {} has no programs'
