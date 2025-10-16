@@ -112,7 +112,7 @@ class Channels(PluginChannels):
                 return tvg_json
         if not tvg_json:
             self.logger.debug('{}:{} Website is restricted.  Wait a long time before running again. Zone: {}  UA Index: {}'
-                    .format(self.plugin_obj.name, self.instance_key, _zone, _uid, self.plugin_obj.ua_index))
+                    .format(self.plugin_obj.name, self.instance_key, _zone, self.plugin_obj.ua_index))
         return
 
     def get_default_zones(self):

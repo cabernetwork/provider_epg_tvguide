@@ -22,6 +22,7 @@ import time
 
 from lib.db.db_epg_programs import DBEpgPrograms
 from lib.plugins.plugin_programs import PluginPrograms
+from lib.common.decorators import handle_url_except
 from .translations import tv_genres
 import lib.common.utils as utils
 
@@ -48,7 +49,11 @@ class Programs(PluginPrograms):
                 self.plugin_obj.unc_tvguide_base + \
                     self.plugin_obj.unc_tvguide_prog_details.format(_prog_id))
 
+
             prog_details = self.get_uri_data(uri, 2, _header=self.plugin_obj.header)
+            #if prog_details is not None:
+            #    self.options_uri_data(uri, 2)
+
             time.sleep(self.config_obj.data[self.plugin_obj.namespace.lower()]['http_delay'])
             if prog_details is None:
                 self.logger.notice('{}:{} No program details returned for Prog_ID: {}  UA Index: {}'
@@ -140,3 +145,34 @@ class Programs(PluginPrograms):
 
         self.db_programs.save_program(self.plugin_obj.name, _prog_id, program)
         return self.db_programs.get_program(self.plugin_obj.name, _prog_id)
+
+    @handle_url_except()
+    def options_uri_data(self, _uri, _retries, _header=None):
+        if _header is None:
+            header = self.options_header()
+        else:
+            header = _header
+        self.logger.trace('OPTIONS URI: {}  HEADER: {}'.format(_uri, header))
+        resp = self.plugin_obj.http_session.options(_uri, headers=header, timeout=8)
+        self.logger.warning('Status Code: {}'.format(resp.status_code))
+        
+        resp.raise_for_status()
+        return
+
+    def options_header(self):
+        return {
+            'Accept': '*/*',
+            'Accept-Encoding': 'gzip, deflate, br, zstd',
+            'Accept-Language': 'en-US,en;q=0.5',
+            'Access-Control-Request-Method': 'GET',
+            'Connection': 'keep-alive',
+            'Host': 'backend.tvguide.com',
+            'Priority': 'u=4',
+            'User-agent': self.plugin_obj.user_agent,
+            'Referer': 'https://www.tvguide.com/',
+            'Origin': 'https://www.tvguide.com',
+            'Sec-Fetch-Dest':  'empty',
+            'Sec-Fetch-Mode':  'cors',
+            'Sec-Fetch-Site':  'same-site'
+
+        }

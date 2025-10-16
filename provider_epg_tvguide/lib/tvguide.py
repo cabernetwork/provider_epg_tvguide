@@ -56,8 +56,7 @@ class TVGuide(PluginObj):
     def incr_ua(self):
         if self.ua_index+1 < len(self.user_agents):
             self.ua_index += 1
-            if self.ua_index+1 >= len(self.user_agents):
-                self.ua_down_time = time.time()
+            self.ua_down_time = time.time()
 
     def check_ua_timer(self):
         delta_down_time = time.time() - self.ua_down_time
@@ -81,13 +80,13 @@ class TVGuide(PluginObj):
     @property
     def header(self):
         return {
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            'Accept': 'application/json, text/plain, */*',
             'Accept-Encoding': 'gzip, deflate, br, zstd',
             'Accept-Language': 'en-US,en;q=0.5',
             'Connection': 'keep-alive',
             'Host': 'backend.tvguide.com',
-            'Priority': 'u=0, i',
+            'Priority': 'u=0',
             'User-agent': self.user_agent,
             'Referer': 'https://www.tvguide.com/',
-            'Origin': 'https://www.tvguide.com'
+            'Origin': 'https://www.tvguide.com',
         }
